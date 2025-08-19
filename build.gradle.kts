@@ -34,15 +34,29 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+	
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	// MapStruct
+	implementation("org.mapstruct:mapstruct:1.5.5.Final")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
+
+	// DB
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.postgresql:postgresql")
 
+	implementation("org.instancio:instancio-junit:3.3.0")
+	implementation("net.datafaker:datafaker:2.0.1")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
+	testImplementation("org.assertj:assertj-core:3.25.3")
 }
 
 tasks.test {

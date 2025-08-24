@@ -6,10 +6,12 @@ import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.service.UserService;
+import hexlet.code.util.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +30,9 @@ public class UsersController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserUtils userUtils;
 
     @GetMapping("/users")
     ResponseEntity<List<UserDTO>> index() {
@@ -50,12 +55,14 @@ public class UsersController {
 
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@userUtils.getCurrentUser().getId() == #id")
     UserDTO update(@RequestBody UserUpdateDTO userData, @PathVariable Long id) {
         return userService.update(userData, id);
     }
 
     @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("@userUtils.getCurrentUser().getId() == #id")
     public void delete(@PathVariable Long id) {
         userService.delete(id);
     }

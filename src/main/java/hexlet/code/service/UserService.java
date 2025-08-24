@@ -9,7 +9,6 @@ import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO update(UserUpdateDTO userData, @PathVariable Long id) {
+    public UserDTO update(UserUpdateDTO userData, Long id) {
         var user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not Found"));
         userMapper.update(userData, user);

@@ -54,6 +54,7 @@ dependencies {
 	implementation("net.datafaker:datafaker:2.0.1")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
 	testImplementation("org.assertj:assertj-core:3.25.3")

@@ -20,21 +20,29 @@ import hexlet.code.model.User;
 import hexlet.code.dto.UserDTO;
 import hexlet.code.util.ModelGenerator;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTest {
+    @Autowired
+    private WebApplicationContext wac;
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,22 +62,26 @@ public class UserControllerTest {
     @Autowired
     private ModelGenerator modelGenerator;
 
+    private JwtRequestPostProcessor token;
     private User testUser;
 
     @BeforeEach
     public void setUp() {
         userRepository.deleteAll();
 
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac)
+                .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
+                .apply(springSecurity())
+                .build();
+
         testUser = Instancio.of(modelGenerator.getUserModel()).create();
         userRepository.save(testUser);
-
-        var testUser2 = Instancio.of(modelGenerator.getUserModel()).create();
-        userRepository.save(testUser2);
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
     }
 
     @Test
     public void testShow() throws Exception {
-        var request =  get("/api/users/" + testUser.getId());
+        var request =  get("/api/users/" + testUser.getId()).with(jwt());
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
@@ -85,7 +97,7 @@ public class UserControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        var request =  get("/api/users");
+        var request =  get("/api/users").with(jwt());
         var response = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn()
@@ -107,6 +119,7 @@ public class UserControllerTest {
         var data = Instancio.of(modelGenerator.getUserCreateDTOModel()).create();
 
         var request = post("/api/users")
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
         mockMvc.perform(request)
@@ -128,6 +141,7 @@ public class UserControllerTest {
         data.put("password", "new-password");
 
         var request = put("/api/users/" + testUser.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -144,7 +158,7 @@ public class UserControllerTest {
     @Test
     public void testDelete() throws Exception {
         var id = testUser.getId();
-        var request = delete("/api/users/" + id);
+        var request = delete("/api/users/" + id).with(token);
         mockMvc.perform(request).andExpect(status().isNoContent());
         assertThat(userRepository.findById(id)).isEmpty();
     }
@@ -155,9 +169,57 @@ public class UserControllerTest {
         data.put("email", "");
         data.put("password", "");
 
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post("/api/users").with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void test403Exception() throws Exception {
+        var userId = testUser.getId();
+        mockMvc.perform(put("/api/users/{id}", userId + 1)
+                        .with(token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {"email": "new@example.com", "password": "newPassword"}
+                    """))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testLoginSuccess() throws Exception {
+        var dataCreate = Instancio.of(modelGenerator.getUserCreateDTOModel()).create();
+        var request = post("/api/users")
+                .with(token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(dataCreate));
+        mockMvc.perform(request);
+
+        var dataLogin = new HashMap<>();
+        dataLogin.put("username", dataCreate.getEmail());
+        dataLogin.put("password", dataCreate.getPassword());
+        mockMvc.perform(post("/api/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsString(dataLogin)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testLogin401() throws Exception {
+        var dataCreate = Instancio.of(modelGenerator.getUserCreateDTOModel()).create();
+        var request = post("/api/users")
+                .with(token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(dataCreate));
+        mockMvc.perform(request);
+
+        var dataLogin = new HashMap<>();
+        dataLogin.put("username", dataCreate.getEmail());
+        dataLogin.put("password", dataCreate.getPassword() + "Labubu");
+        mockMvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(dataLogin)))
+                .andExpect(status().isUnauthorized());
     }
 }

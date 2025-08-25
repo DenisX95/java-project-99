@@ -43,7 +43,7 @@ public class UserService {
     @Transactional
     public UserDTO update(UserUpdateDTO userData, Long id) {
         var user = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
         userMapper.update(userData, user);
         repository.save(user);
         return userMapper.map(user);

@@ -1,6 +1,7 @@
 package hexlet.code.util;
 
 import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.model.TaskStatus;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Select;
@@ -18,6 +19,7 @@ import hexlet.code.model.User;
 public class ModelGenerator {
     private Model<User> userModel;
     private Model<UserCreateDTO> userCreateDTOModel;
+    private Model<TaskStatus> taskStatusModel;
 
     @Autowired
     private Faker faker;
@@ -33,6 +35,13 @@ public class ModelGenerator {
         userCreateDTOModel = Instancio.of(UserCreateDTO.class)
                 .supply(Select.field(UserCreateDTO::getEmail), () -> faker.internet().emailAddress())
                 .generate(Select.field(UserCreateDTO::getPassword), gen -> gen.string().length(10))
+                .toModel();
+
+        taskStatusModel = Instancio.of(TaskStatus.class)
+                .ignore(Select.field(TaskStatus::getId))
+                .ignore(Select.field(TaskStatus::getCreatedAt))
+                .generate(Select.field(TaskStatus::getName), gen -> gen.string().length(10))
+                .generate(Select.field(TaskStatus::getSlug), gen -> gen.string().length(5))
                 .toModel();
     }
 }

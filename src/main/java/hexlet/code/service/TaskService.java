@@ -15,10 +15,10 @@ import java.util.List;
 @Service
 public class TaskService {
     @Autowired
-    TaskRepository taskRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
-    TaskMapper taskMapper;
+    private TaskMapper taskMapper;
 
     public List<TaskDTO> getAll() {
         var tasks = taskRepository.findAll();

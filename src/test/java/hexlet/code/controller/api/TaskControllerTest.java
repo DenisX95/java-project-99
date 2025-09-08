@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskDTO;
 import hexlet.code.dto.TaskUpdateDTO;
-import hexlet.code.dto.UserDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Task;
-import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
@@ -106,7 +104,7 @@ public class TaskControllerTest {
                 .getResponse();
         var body = response.getContentAsString();
 
-        List<TaskDTO> taskDTOS = om.readValue(body, new TypeReference<>() {});
+        List<TaskDTO> taskDTOS = om.readValue(body, new TypeReference<>() { });
         var actual = taskDTOS.stream().map(taskMapper::map).toList();
         var expected = taskRepository.findAll();
 

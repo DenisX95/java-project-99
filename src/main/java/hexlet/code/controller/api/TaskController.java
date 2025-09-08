@@ -25,7 +25,7 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    TaskService taskService;
+    private TaskService taskService;
 
     @GetMapping("")
     ResponseEntity<List<TaskDTO>> index() {

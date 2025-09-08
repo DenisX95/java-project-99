@@ -50,7 +50,7 @@ public class TaskStatusControllerTest {
     @Autowired
     private TaskStatusRepository taskStatusRepository;
     @Autowired
-    TaskRepository taskRepository;
+    private TaskRepository taskRepository;
     @Autowired
     private TaskStatusMapper taskStatusMapper;
     @Autowired

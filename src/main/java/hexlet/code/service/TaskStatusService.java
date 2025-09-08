@@ -54,5 +54,14 @@ public class TaskStatusService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public TaskStatusDTO create(String name, String slug) {
+        var taskStatusCreateDTO = new TaskStatusCreateDTO();
+        taskStatusCreateDTO.setName(name);
+        taskStatusCreateDTO.setSlug(slug);
+        var taskStatus = taskStatusMapper.map(taskStatusCreateDTO);
+        repository.save(taskStatus);
+        return taskStatusMapper.map(taskStatus);
+    }
 }
 

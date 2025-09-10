@@ -1,6 +1,7 @@
 package hexlet.code.util;
 
 import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import org.instancio.Instancio;
@@ -22,6 +23,7 @@ public class ModelGenerator {
     private Model<UserCreateDTO> userCreateDTOModel;
     private Model<TaskStatus> taskStatusModel;
     private Model<Task> taskModel;
+    private Model<Label> labelModel;
 
     @Autowired
     private Faker faker;
@@ -52,10 +54,18 @@ public class ModelGenerator {
                 .ignore(Select.field(Task::getId))
                 .ignore(Select.field(Task::getAssignee))
                 .ignore(Select.field(Task::getTaskStatus))
+                .ignore(Select.field(Task::getLabels))
                 .ignore(Select.field(Task::getCreatedAt))
                 .generate(Select.field(Task::getIndex), gen -> gen.ints().range(1, 100))
                 .generate(Select.field(Task::getName), gen -> gen.string().minLength(1).maxLength(50))
                 .generate(Select.field(Task::getDescription), gen -> gen.string().minLength(1).maxLength(200))
+                .toModel();
+
+        labelModel = Instancio.of(Label.class)
+                .ignore(Select.field(Label::getId))
+                .ignore(Select.field(Label::getCreatedAt))
+                .ignore(Select.field(Label::getTasks))
+                .supply(Select.field(Label::getName), () -> faker.text().text(3, 1000))
                 .toModel();
     }
 }

@@ -43,7 +43,7 @@ public class TaskService {
     @Transactional
     public TaskDTO update(TaskUpdateDTO taskData, Long id) {
         var task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("TaskStatus with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
         taskMapper.update(taskData, task);
         taskRepository.save(task);
         return taskMapper.map(task);

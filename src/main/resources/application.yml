@@ -15,12 +15,6 @@ server:
   address: 0.0.0.0
   port: ${PORT:8080}
 
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    api-docs:
-      path: /api-docs
-
 sentry:
   dsn: https://7e0d46d979e9381745b4db1ed25561fd@o4509214198857728.ingest.de.sentry.io/4509214202134608
   send-default-pii: true

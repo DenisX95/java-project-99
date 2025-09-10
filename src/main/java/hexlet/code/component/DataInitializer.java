@@ -1,6 +1,7 @@
 package hexlet.code.component;
 
 import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.service.LabelService;
 import hexlet.code.service.TaskStatusService;
 import hexlet.code.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class DataInitializer implements ApplicationRunner {
 
     private final UserService userService;
     private final TaskStatusService taskStatusService;
+    private final LabelService labelService;
 
         @Override
         public void run(ApplicationArguments args) throws Exception {
@@ -30,5 +32,8 @@ public class DataInitializer implements ApplicationRunner {
             taskStatusService.create("ToBeFixed", "to_be_fixed");
             taskStatusService.create("ToPublished", "to_publish");
             taskStatusService.create("Published", "published");
+
+            labelService.create("feature");
+            labelService.create("bug");
     }
 }

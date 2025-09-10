@@ -1,10 +1,12 @@
 package hexlet.code.model;
 
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.NoArgsConstructor;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
@@ -19,6 +21,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -29,7 +33,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Setter
 @ToString(includeFieldNames = true, onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@NoArgsConstructor
 public class Task {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -52,6 +55,14 @@ public class Task {
     @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Include
     private TaskStatus taskStatus;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "tasks_labels",
+        joinColumns = @JoinColumn(name = "tasks_id"),
+        inverseJoinColumns = @JoinColumn(name = "labels_id")
+    )
+    private List<Label> labels = new ArrayList<>();
 
     @ToString.Include
     @ManyToOne

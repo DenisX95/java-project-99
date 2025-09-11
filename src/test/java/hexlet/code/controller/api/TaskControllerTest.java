@@ -6,6 +6,8 @@ import hexlet.code.dto.Task.TaskCreateDTO;
 import hexlet.code.dto.Task.TaskDTO;
 import hexlet.code.dto.Task.TaskUpdateDTO;
 import hexlet.code.mapper.TaskMapper;
+import hexlet.code.model.Label;
+import hexlet.code.model.User;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.LabelRepository;
@@ -72,7 +74,8 @@ public class TaskControllerTest {
     private JwtRequestPostProcessor token;
     private Task testTask;
     private TaskStatus testTaskStatus;
-
+    private User testUser;
+    private Label testLabel;
 
     @BeforeEach
     public void setUp() {
@@ -82,18 +85,18 @@ public class TaskControllerTest {
                 .build();
 
 
-        var user = Instancio.of(modelGenerator.getUserModel()).create();
-        userRepository.save(user);
-        token = jwt().jwt(builder -> builder.subject(user.getEmail()));
+        testUser = Instancio.of(modelGenerator.getUserModel()).create();
+        userRepository.save(testUser);
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
 
         testTaskStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
         taskStatusRepository.save(testTaskStatus);
 
-        var testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
+        testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
         labelRepository.save(testLabel);
 
         testTask = Instancio.of(modelGenerator.getTaskModel()).create();
-        testTask.setAssignee(user);
+        testTask.setAssignee(testUser);
         testTask.setTaskStatus(testTaskStatus);
         testTask.getLabels().add(testLabel);
         taskRepository.save(testTask);
@@ -121,6 +124,39 @@ public class TaskControllerTest {
         var expected = taskRepository.findAll();
 
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @Test
+    public void testIndexWithPathParams() throws Exception {
+        var testTask2 = Instancio.of(modelGenerator.getTaskModel()).create();
+        testTask2.setAssignee(testUser);
+        testTask2.setTaskStatus(testTaskStatus);
+        testTask.getLabels().add(testLabel);
+        taskRepository.save(testTask2);
+
+        var key1 = testTask.getName().substring(2);
+        var key2 = testTask.getAssignee().getId();
+        var key3 = testTask.getTaskStatus().getSlug();
+        var key4 = testLabel.getId();
+
+        var request = get("/api/tasks?"
+                + "titleCont=" + key1
+                + "&assigneeId=" + key2
+                + "&status=" + key3
+                + "&labelId=" + key4).with(token);
+
+        var response = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+        var body = response.getContentAsString();
+        List<TaskDTO> actual = om.readValue(body, new TypeReference<>() { });
+
+        assertThat(actual).hasSize(1);
+        assertThatJson(actual.get(0)).and(
+                v -> v.node("id").isEqualTo(testTask.getId()),
+                v -> v.node("title").isEqualTo(testTask.getName()),
+                v -> v.node("content").isEqualTo(testTask.getDescription()));
     }
 
     @Test

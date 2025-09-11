@@ -16,8 +16,9 @@ server:
   port: ${PORT:8080}
 
 sentry:
-  dsn: https://7e0d46d979e9381745b4db1ed25561fd@o4509214198857728.ingest.de.sentry.io/4509214202134608
+  dsn: https://cd3994df397c7d6226ca49cb6e89c1dc@o4510001266491392.ingest.de.sentry.io/4510001358962768
   send-default-pii: true
+  tracesSampleRate: 1.0
 
 rsa:
   private-key: classpath:certs/private.pem

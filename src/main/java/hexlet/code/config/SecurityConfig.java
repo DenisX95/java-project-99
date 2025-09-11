@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
+                                "/welcome",
                                 "/index.html",
                                 "/assets/**",
                                 "/api/login"

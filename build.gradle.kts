@@ -10,6 +10,7 @@ plugins {
 	id("org.springframework.boot") version "3.5.4"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("org.sonarqube") version "6.2.0.5505"
+	id("io.sentry.jvm.gradle") version "5.10.0"
 }
 
 group = "hexlet.code"
@@ -89,4 +90,12 @@ sonar {
 		property("sonar.host.url", "https://sonarcloud.io")
 		property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
 	}
+}
+
+sentry {
+	includeSourceContext = true
+
+	org = "denisx95"
+	projectName = "java-spring"
+	authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }

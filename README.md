@@ -3,8 +3,6 @@
 **Task Manager** — это современная система управления задачами.
 Приложение позволяет эффективно организовывать рабочие процессы: создавать задачи, назначать исполнителей, отслеживать статусы и управлять метками.
 
-https://java-project-99-m23v.onrender.com
-
 [![Actions Status](https://github.com/DenisX95/java-project-99/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/DenisX95/java-project-99/actions)
 [![Actions Status](https://github.com/DenisX95/java-project-99/actions/workflows/build.yml/badge.svg)](https://github.com/DenisX95/java-project-99/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DenisX95_java-project-99&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DenisX95_java-project-99)
@@ -31,6 +29,10 @@ cd java-project-99
 ./gradlew bootRun
 ```
 
+### Запуск приложения на Render
+https://java-project-99-m23v.onrender.com
+
+
 ## Документация API
-После запуска приложение доступно по адресу:
-🔗 http://localhost:8080/swagger-ui.html
+🔗 https://java-project-99-m23v.onrender.com/swagger-ui.html
+

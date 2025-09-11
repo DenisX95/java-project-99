@@ -6,7 +6,6 @@ import hexlet.code.mapper.LabelMapper;
 import hexlet.code.repository.LabelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,14 +28,12 @@ public class LabelService {
         return labelMapper.map(label);
     }
 
-    @Transactional
     public LabelDTO create(LabelInputDTO data) {
         var label = labelMapper.map(data);
         labelRepository.save(label);
         return labelMapper.map(label);
     }
 
-    @Transactional
     public LabelDTO update(LabelInputDTO data, Long id) {
         var label = labelRepository.findById(id).orElseThrow();
         labelMapper.update(data, label);
@@ -44,7 +41,6 @@ public class LabelService {
         return labelMapper.map(label);
     }
 
-    @Transactional
     public void delete(Long id) {
         labelRepository.deleteById(id);
     }

@@ -9,7 +9,6 @@ import hexlet.code.repository.TaskStatusRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,14 +33,12 @@ public class TaskStatusService {
         return taskStatusMapper.map(taskStatus);
     }
 
-    @Transactional
     public TaskStatusDTO create(TaskStatusCreateDTO taskStatusData) {
         var taskStatus = taskStatusMapper.map(taskStatusData);
         repository.save(taskStatus);
         return taskStatusMapper.map(taskStatus);
     }
 
-    @Transactional
     public TaskStatusDTO update(TaskStatusUpdateDTO taskStatusData, Long id) {
         var taskStatus = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("TaskStatus with id " + id + " not found"));
@@ -50,7 +47,6 @@ public class TaskStatusService {
         return taskStatusMapper.map(taskStatus);
     }
 
-    @Transactional
     public void delete(Long id) {
         repository.deleteById(id);
     }

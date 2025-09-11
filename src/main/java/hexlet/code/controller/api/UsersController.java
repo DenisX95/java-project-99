@@ -2,9 +2,9 @@ package hexlet.code.controller.api;
 
 import java.util.List;
 
-import hexlet.code.dto.UserCreateDTO;
-import hexlet.code.dto.UserDTO;
-import hexlet.code.dto.UserUpdateDTO;
+import hexlet.code.dto.User.UserCreateDTO;
+import hexlet.code.dto.User.UserDTO;
+import hexlet.code.dto.User.UserUpdateDTO;
 import hexlet.code.service.UserService;
 import hexlet.code.util.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;

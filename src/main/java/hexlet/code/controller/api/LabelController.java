@@ -1,8 +1,8 @@
 package hexlet.code.controller.api;
 
 
-import hexlet.code.dto.LabelDTO;
-import hexlet.code.dto.LabelInputDTO;
+import hexlet.code.dto.Label.LabelDTO;
+import hexlet.code.dto.Label.LabelInputDTO;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.service.LabelService;
 import jakarta.validation.Valid;

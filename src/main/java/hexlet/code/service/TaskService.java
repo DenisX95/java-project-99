@@ -1,14 +1,13 @@
 package hexlet.code.service;
 
-import hexlet.code.dto.TaskCreateDTO;
-import hexlet.code.dto.TaskDTO;
-import hexlet.code.dto.TaskUpdateDTO;
+import hexlet.code.dto.Task.TaskCreateDTO;
+import hexlet.code.dto.Task.TaskDTO;
+import hexlet.code.dto.Task.TaskUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,14 +32,12 @@ public class TaskService {
         return taskMapper.map(task);
     }
 
-    @Transactional
     public TaskDTO create(TaskCreateDTO taskData) {
         var task = taskMapper .map(taskData);
         taskRepository.save(task);
         return taskMapper.map(task);
     }
 
-    @Transactional
     public TaskDTO update(TaskUpdateDTO taskData, Long id) {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id + " not found"));
@@ -49,7 +46,6 @@ public class TaskService {
         return taskMapper.map(task);
     }
 
-    @Transactional
     public void delete(Long id) {
         taskRepository.deleteById(id);
     }

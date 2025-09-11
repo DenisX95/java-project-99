@@ -1,6 +1,6 @@
 package hexlet.code.util;
 
-import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.dto.User.UserCreateDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;

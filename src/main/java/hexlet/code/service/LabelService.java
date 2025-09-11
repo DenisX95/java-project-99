@@ -1,7 +1,7 @@
 package hexlet.code.service;
 
-import hexlet.code.dto.LabelDTO;
-import hexlet.code.dto.LabelInputDTO;
+import hexlet.code.dto.Label.LabelDTO;
+import hexlet.code.dto.Label.LabelInputDTO;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.repository.LabelRepository;
 import org.springframework.beans.factory.annotation.Autowired;

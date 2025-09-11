@@ -1,7 +1,7 @@
 package hexlet.code.mapper;
 
-import hexlet.code.dto.LabelDTO;
-import hexlet.code.dto.LabelInputDTO;
+import hexlet.code.dto.Label.LabelDTO;
+import hexlet.code.dto.Label.LabelInputDTO;
 import hexlet.code.model.Label;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

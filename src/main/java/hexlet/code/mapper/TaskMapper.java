@@ -1,8 +1,8 @@
 package hexlet.code.mapper;
 
-import hexlet.code.dto.TaskCreateDTO;
-import hexlet.code.dto.TaskDTO;
-import hexlet.code.dto.TaskUpdateDTO;
+import hexlet.code.dto.Task.TaskCreateDTO;
+import hexlet.code.dto.Task.TaskDTO;
+import hexlet.code.dto.Task.TaskUpdateDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
@@ -37,14 +37,14 @@ public abstract class TaskMapper {
     @Mapping(target = "title", source = "name")
     @Mapping(target = "content", source = "description")
     @Mapping(target = "status", source = "taskStatus.slug")
-    @Mapping(target = "labelIds", source = "labels", qualifiedByName = "labelsToId")
+    @Mapping(target = "taskLabelIds", source = "labels", qualifiedByName = "labelsToId")
     public abstract TaskDTO map(Task data);
 
     @Mapping(target = "assignee", source = "assigneeId")
     @Mapping(target = "description", source = "content")
     @Mapping(target = "name", source = "title")
     @Mapping(target = "taskStatus", source = "status", qualifiedByName = "slugToTaskStatus")
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "idToLabels")
+    @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "idToLabels")
     public abstract Task map(TaskCreateDTO data);
 
     public abstract Task map(TaskDTO data);
@@ -53,26 +53,26 @@ public abstract class TaskMapper {
     @Mapping(target = "description", source = "content")
     @Mapping(target = "name", source = "title")
     @Mapping(target = "taskStatus", source = "status", qualifiedByName = "slugToTaskStatus")
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "idToLabels")
+    @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "idToLabels")
     public abstract void update(TaskUpdateDTO data, @MappingTarget Task task);
 
 
     @Named("slugToTaskStatus")
     public final TaskStatus slugToStatus(String data) {
-        var status = taskStatusRepository.findBySlug(data).orElseThrow();
-        return status;
+        return taskStatusRepository.findBySlug(data).orElseThrow();
     }
 
     @Named("labelsToId")
     public final List<Long> toDTO(List<Label> labels) {
-        return labels.isEmpty() ? new ArrayList<>() : labels.stream()
+        return labels.isEmpty() ? new ArrayList<>() {
+        } : labels.stream()
                 .map(Label::getId)
                 .collect(Collectors.toList());
     }
 
     @Named("idToLabels")
-    public final List<Label> toEntity(List<Long> labelIds) {
-        return labelIds.isEmpty() ? new ArrayList<>() : labelIds.stream()
+    public final List<Label> toEntity(List<Long> taskLabelIds) {
+        return taskLabelIds.isEmpty() ? new ArrayList<>() : taskLabelIds.stream()
                 .map(labelId -> labelRepository.findById(labelId).get())
                 .collect(Collectors.toList());
     }

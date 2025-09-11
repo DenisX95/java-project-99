@@ -19,7 +19,7 @@ import org.springframework.http.MediaType;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.model.User;
-import hexlet.code.dto.UserDTO;
+import hexlet.code.dto.User.UserDTO;
 import hexlet.code.util.ModelGenerator;
 
 import java.nio.charset.StandardCharsets;

@@ -14,10 +14,10 @@ import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.service.TaskStatusService;
+import hexlet.code.service.impl.TaskStatusServiceImpl;
 import hexlet.code.util.ModelGenerator;
+import lombok.RequiredArgsConstructor;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -49,28 +49,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TaskControllerTest {
-    @Autowired
-    private WebApplicationContext wac;
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private TaskStatusRepository taskStatusRepository;
-    @Autowired
-    private LabelRepository labelRepository;
-    @Autowired
-    private TaskStatusService taskStatusService;
-    @Autowired
-    private ObjectMapper om;
-    @Autowired
-    private TaskMapper taskMapper;
-    @Autowired
-    private ModelGenerator modelGenerator;
 
+    private final WebApplicationContext wac;
+    private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
+    private final TaskStatusRepository taskStatusRepository;
+    private final LabelRepository labelRepository;
+    private final TaskStatusServiceImpl taskStatusService;
+    private final ObjectMapper om;
+    private final TaskMapper taskMapper;
+    private final ModelGenerator modelGenerator;
+
+    private MockMvc mockMvc;
     private JwtRequestPostProcessor token;
     private Task testTask;
     private TaskStatus testTaskStatus;
@@ -79,11 +71,15 @@ public class TaskControllerTest {
 
     @BeforeEach
     public void setUp() {
+        taskRepository.deleteAll();
+        labelRepository.deleteAll();
+        taskStatusRepository.deleteAll();
+        userRepository.deleteAll();
+
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
                 .build();
-
 
         testUser = Instancio.of(modelGenerator.getUserModel()).create();
         userRepository.save(testUser);
@@ -101,15 +97,6 @@ public class TaskControllerTest {
         testTask.getLabels().add(testLabel);
         taskRepository.save(testTask);
     }
-
-    @AfterEach
-    public void clear() {
-        taskRepository.deleteAll();
-        labelRepository.deleteAll();
-        taskStatusRepository.deleteAll();
-        userRepository.deleteAll();
-    }
-
 
     @Test
     public void testIndex() throws Exception {

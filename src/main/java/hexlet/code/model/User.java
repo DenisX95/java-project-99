@@ -1,9 +1,7 @@
 package hexlet.code.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
@@ -26,7 +24,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -65,10 +62,6 @@ public class User implements UserDetails, BaseEntity {
 
     @LastModifiedDate
     private LocalDate updatedAt;
-
-    @OneToMany(mappedBy = "assignee")
-    @JsonIgnore
-    private List<Task> tasks = new ArrayList<>();
 
     @Override
     public String getPassword() {

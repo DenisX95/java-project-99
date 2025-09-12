@@ -6,7 +6,7 @@ import hexlet.code.dto.User.UserCreateDTO;
 import hexlet.code.dto.User.UserDTO;
 import hexlet.code.dto.User.UserUpdateDTO;
 import hexlet.code.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -25,10 +25,10 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
+@AllArgsConstructor
 public class UsersController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("")
     ResponseEntity<List<UserDTO>> index() {

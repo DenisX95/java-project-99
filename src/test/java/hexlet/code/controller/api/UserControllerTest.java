@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hexlet.code.repository.TaskRepository;
+import lombok.RequiredArgsConstructor;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,23 +44,18 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserControllerTest {
-    @Autowired
-    private WebApplicationContext wac;
-    @Autowired
+
+    private final WebApplicationContext wac;
+    private final ObjectMapper om;
+    private final PasswordEncoder encoder;
+    private final UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
+    private final ModelGenerator modelGenerator;
+
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper om;
-    @Autowired
-    private PasswordEncoder encoder;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private ModelGenerator modelGenerator;
     private JwtRequestPostProcessor token;
     private User testUser;
 

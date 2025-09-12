@@ -10,8 +10,8 @@ import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
+import lombok.RequiredArgsConstructor;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,28 +41,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class LabelControllerTest {
-    @Autowired
-    private WebApplicationContext wac;
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private LabelMapper labelMapper;
-    @Autowired
-    private LabelRepository labelRepository;
-    @Autowired
-    private ModelGenerator modelGenerator;
-    @Autowired
-    private ObjectMapper om;
 
+    private final WebApplicationContext wac;
+    private final UserRepository userRepository;
+    private final LabelMapper labelMapper;
+    private final LabelRepository labelRepository;
+    private final ModelGenerator modelGenerator;
+    private final ObjectMapper om;
+
+    private MockMvc mockMvc;
     private User testUser;
     private Label testLabel;
     private JwtRequestPostProcessor token;
 
     @BeforeEach
     public void setUp() {
+        labelRepository.deleteAll();
+        userRepository.deleteAll();
+
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
@@ -74,12 +72,6 @@ public class LabelControllerTest {
 
         testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
         labelRepository.save(testLabel);
-    }
-
-    @AfterEach
-    public void clear() {
-        labelRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     @Test

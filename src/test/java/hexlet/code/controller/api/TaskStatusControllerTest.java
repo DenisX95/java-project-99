@@ -8,6 +8,7 @@ import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.util.ModelGenerator;
+import lombok.RequiredArgsConstructor;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,22 +41,17 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TaskStatusControllerTest {
-    @Autowired
-    private WebApplicationContext wac;
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper om;
-    @Autowired
-    private TaskStatusRepository taskStatusRepository;
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private TaskStatusMapper taskStatusMapper;
-    @Autowired
-    private ModelGenerator modelGenerator;
 
+    private final WebApplicationContext wac;
+    private final ObjectMapper om;
+    private final TaskStatusRepository taskStatusRepository;
+    private final TaskRepository taskRepository;
+    private final TaskStatusMapper taskStatusMapper;
+    private final ModelGenerator modelGenerator;
+
+    private MockMvc mockMvc;
     private JwtRequestPostProcessor token;
     private TaskStatus taskStatus;
 

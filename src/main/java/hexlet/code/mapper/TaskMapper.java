@@ -70,9 +70,7 @@ public abstract class TaskMapper {
     }
 
     @Named("idToLabels")
-    public final List<Label> toEntity(List<Long> taskLabelIds) {
-        return taskLabelIds.isEmpty() ? new ArrayList<>() : taskLabelIds.stream()
-                .map(labelId -> labelRepository.findById(labelId).get())
-                .collect(Collectors.toList());
+    public final Set<Label> toEntity(List<Long> taskLabelIds) {
+        return labelRepository.findByIdIn(taskLabelIds);
     }
 }

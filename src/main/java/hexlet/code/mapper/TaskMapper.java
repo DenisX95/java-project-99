@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Mapper(
@@ -72,7 +73,14 @@ public abstract class TaskMapper {
 
     @Named("idToLabels")
     public final List<Label> toEntity(List<Long> taskLabelIds) {
-        return taskLabelIds.isEmpty() ? new ArrayList<>()
-                : labelRepository.findAllById(taskLabelIds);
+        if (taskLabelIds == null || taskLabelIds.isEmpty()) {
+            return List.of();
+        }
+        List<Label> fetched = labelRepository.findAllById(taskLabelIds);
+        var fetchedById = fetched.stream()
+                .collect(Collectors.toMap(Label::getId, Function.identity()));
+        return taskLabelIds.stream()
+                .map(fetchedById::get)
+                .toList();
     }
 }

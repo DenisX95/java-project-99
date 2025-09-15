@@ -18,8 +18,10 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(
@@ -64,18 +66,17 @@ public abstract class TaskMapper {
     }
 
     @Named("labelsToId")
-    public final List<Long> toDTO(List<Label> labels) {
-        return labels.isEmpty() ? new ArrayList<>()
-                : labels.stream()
-                    .map(Label::getId)
-                    .collect(Collectors.toList());
+    public final List<Long> toDTO(Set<Label> labels) {
+        return labels.isEmpty() ? new ArrayList<>() : labels.stream()
+                .map(Label::getId)
+                .collect(Collectors.toList());
     }
 
     @Named("idToLabels")
-    public final List<Label> toEntity(List<Long> taskLabelIds) {
+    public final Set<Label> toEntity(List<Long> taskLabelIds) {
         if (taskLabelIds == null || taskLabelIds.isEmpty()) {
-            return new ArrayList<>();
+            return new HashSet<>();
         }
-        return labelRepository.findAllById(taskLabelIds.stream().filter(Objects::nonNull).toList());
+        return labelRepository.findAllByIdIn(taskLabelIds.stream().filter(Objects::nonNull).toList());
     }
 }

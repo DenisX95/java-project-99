@@ -18,10 +18,9 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(
         uses = {JsonNullableMapper.class, ReferenceMapper.class},
@@ -65,21 +64,14 @@ public abstract class TaskMapper {
 
     @Named("labelsToId")
     public final List<Long> toDTO(Set<Label> labels) {
-        if (labels.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return labels.stream()
+        return labels == null ? new ArrayList<>()
+                : labels.stream()
                 .map(Label::getId)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Named("idToLabels")
     public final Set<Label> toEntity(List<Long> taskLabelIds) {
-        if (taskLabelIds.isEmpty()) {
-            return new HashSet<>();
-        }
-        return labelRepository.findByIdIn(taskLabelIds.stream()
-                .filter(Objects::nonNull)
-                .toList());
+        return labelRepository.findByIdIn(taskLabelIds);
     }
 }

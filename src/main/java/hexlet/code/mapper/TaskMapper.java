@@ -64,16 +64,15 @@ public abstract class TaskMapper {
 
     @Named("labelsToId")
     public final List<Long> toDTO(List<Label> labels) {
-        return labels.isEmpty() ? new ArrayList<>() {
-        } : labels.stream()
-                .map(Label::getId)
-                .collect(Collectors.toList());
+        return labels.isEmpty() ? new ArrayList<>()
+                : labels.stream()
+                    .map(Label::getId)
+                    .collect(Collectors.toList());
     }
 
     @Named("idToLabels")
     public final List<Label> toEntity(List<Long> taskLabelIds) {
-        return taskLabelIds.isEmpty() ? new ArrayList<>() : taskLabelIds.stream()
-                .map(labelId -> labelRepository.findById(labelId).get())
-                .collect(Collectors.toList());
+        return taskLabelIds.isEmpty() ? new ArrayList<>()
+                : labelRepository.findAllById(taskLabelIds);
     }
 }

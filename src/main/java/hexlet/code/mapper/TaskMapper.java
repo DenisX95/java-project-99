@@ -3,7 +3,6 @@ package hexlet.code.mapper;
 import hexlet.code.dto.Task.TaskCreateDTO;
 import hexlet.code.dto.Task.TaskDTO;
 import hexlet.code.dto.Task.TaskUpdateDTO;
-import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
@@ -20,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Mapper(
@@ -75,24 +74,8 @@ public abstract class TaskMapper {
     @Named("idToLabels")
     public final List<Label> toEntity(List<Long> taskLabelIds) {
         if (taskLabelIds == null || taskLabelIds.isEmpty()) {
-            return List.of();
+            return new ArrayList<>();
         }
-
-        var uniqueIds = taskLabelIds.stream().distinct().toList();
-        List<Label> fetched = labelRepository.findAllById(uniqueIds);
-
-        var fetchedById = fetched.stream()
-                .collect(Collectors.toMap(Label::getId, Function.identity()));
-
-        var missing = uniqueIds.stream()
-                .filter(id -> !fetchedById.containsKey(id))
-                .toList();
-        if (!missing.isEmpty()) {
-            throw new ResourceNotFoundException("Unknown label ids: " + missing);
-        }
-
-        return uniqueIds.stream()
-                .map(fetchedById::get)
-                .toList();
+        return labelRepository.findAllById(taskLabelIds.stream().filter(Objects::nonNull).toList());
     }
 }

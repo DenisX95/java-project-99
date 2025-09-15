@@ -64,8 +64,7 @@ public abstract class TaskMapper {
 
     @Named("labelsToId")
     public final List<Long> toDTO(Set<Label> labels) {
-        return labels == null ? new ArrayList<>()
-                : labels.stream()
+        return labels.isEmpty() ? new ArrayList<>() : labels.stream()
                 .map(Label::getId)
                 .collect(Collectors.toList());
     }

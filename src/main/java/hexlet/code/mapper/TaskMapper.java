@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(
         uses = {JsonNullableMapper.class, ReferenceMapper.class},
@@ -59,7 +58,6 @@ public abstract class TaskMapper {
     @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "idToLabels")
     public abstract void update(TaskUpdateDTO data, @MappingTarget Task task);
 
-
     @Named("slugToTaskStatus")
     public final TaskStatus slugToStatus(String data) {
         return taskStatusRepository.findBySlug(data).orElseThrow();
@@ -67,16 +65,21 @@ public abstract class TaskMapper {
 
     @Named("labelsToId")
     public final List<Long> toDTO(Set<Label> labels) {
-        return labels.isEmpty() ? new ArrayList<>() : labels.stream()
+        if (labels.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return labels.stream()
                 .map(Label::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Named("idToLabels")
     public final Set<Label> toEntity(List<Long> taskLabelIds) {
-        if (taskLabelIds == null || taskLabelIds.isEmpty()) {
+        if (taskLabelIds.isEmpty()) {
             return new HashSet<>();
         }
-        return labelRepository.findAllByIdIn(taskLabelIds.stream().filter(Objects::nonNull).toList());
+        return labelRepository.findByIdIn(taskLabelIds.stream()
+                .filter(Objects::nonNull)
+                .toList());
     }
 }

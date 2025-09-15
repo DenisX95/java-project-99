@@ -3,6 +3,7 @@ package hexlet.code.mapper;
 import hexlet.code.dto.Task.TaskCreateDTO;
 import hexlet.code.dto.Task.TaskDTO;
 import hexlet.code.dto.Task.TaskUpdateDTO;
+import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
@@ -76,10 +77,21 @@ public abstract class TaskMapper {
         if (taskLabelIds == null || taskLabelIds.isEmpty()) {
             return List.of();
         }
-        List<Label> fetched = labelRepository.findAllById(taskLabelIds);
+
+        var uniqueIds = taskLabelIds.stream().distinct().toList();
+        List<Label> fetched = labelRepository.findAllById(uniqueIds);
+
         var fetchedById = fetched.stream()
                 .collect(Collectors.toMap(Label::getId, Function.identity()));
-        return taskLabelIds.stream()
+
+        var missing = uniqueIds.stream()
+                .filter(id -> !fetchedById.containsKey(id))
+                .toList();
+        if (!missing.isEmpty()) {
+            throw new ResourceNotFoundException("Unknown label ids: " + missing);
+        }
+
+        return uniqueIds.stream()
                 .map(fetchedById::get)
                 .toList();
     }
